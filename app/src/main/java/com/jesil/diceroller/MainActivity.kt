@@ -44,17 +44,20 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun DiceRollerApp() {
+    var result by remember { mutableIntStateOf((1..6).random()) }
     DiceWithImageAndButton(
         modifier = Modifier
             .fillMaxSize()
-            .wrapContentSize(align = Alignment.Center)
-    )
+            .wrapContentSize(align = Alignment.Center),
+        result = result,
+    ) {
+        result = (1..6).random()
+    }
 }
 
 @Composable
-fun DiceWithImageAndButton(modifier: Modifier) {
-    var result by remember { mutableIntStateOf((1..6).random()) }
-    val imageResource: Int = when(result){
+fun DiceWithImageAndButton(modifier: Modifier, result: Int, roll: (Int) -> Unit) {
+    val imageResource: Int = when (result) {
         1 -> R.drawable.dice_1
         2 -> R.drawable.dice_2
         3 -> R.drawable.dice_3
@@ -72,7 +75,7 @@ fun DiceWithImageAndButton(modifier: Modifier) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { result = (1..6).random() },
+            onClick = { roll(result) },
         ) {
             Text(text = stringResource(id = R.string.roll))
         }
